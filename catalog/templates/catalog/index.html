@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Catalog | Doordish</title>
+    <style>
+        body {
+            margin: 0;
+            background: #f8f9f5;
+            color: #19251e;
+            font: 1rem/1.5 system-ui, sans-serif;
+        }
+        main {
+            max-width: 40rem;
+            margin: 0 auto;
+            padding: clamp(2rem, 7vw, 4rem) 1.25rem;
+        }
+        h1 {
+            font-size: 2.5rem;
+            line-height: 1.1;
+            margin: 0 0 2rem;
+        }
+        h2 { font-size: 1.25rem; }
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        li {
+            display: flex;
+            justify-content: space-between;
+            gap: 1.25rem;
+            padding: 0.875rem 0;
+            border-top: 1px solid #d8ded7;
+        }
+        .price {
+            flex-shrink: 0;
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Catalog</h1>
+        {% regroup products by merchant as merchants %}
+        {% for merchant in merchants %}
+        <section aria-labelledby="merchant-{{ merchant.grouper.pk }}">
+            <h2 id="merchant-{{ merchant.grouper.pk }}">{{ merchant.grouper.name }}</h2>
+            <ul>
+                {% for product in merchant.list %}
+                <li>
+                    <span>{{ product.name }}</span>
+                    <span class="price">${{ product.unit_price|floatformat:"2u" }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% empty %}
+        <p>No products are available right now.</p>
+        {% endfor %}
+    </main>
+</body>
+</html>

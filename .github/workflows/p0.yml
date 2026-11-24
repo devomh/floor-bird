@@ -1,0 +1,39 @@
+name: P0 catalog
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  catalog:
+    runs-on: ubuntu-24.04
+    env:
+      POSTGRES_PORT: "55432"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Start PostgreSQL and build the Django image
+        run: |
+          docker compose up --wait db
+          docker compose build web
+      - name: Check migrations and test the catalog
+        run: |
+          docker compose run --rm web python manage.py makemigrations --check --dry-run
+          docker compose run --rm web python manage.py migrate --noinput
+          docker compose run --rm web python manage.py test
+      - name: Check the demo catalog over HTTP
+        run: |
+          docker compose run --rm web python manage.py seed_demo
+          docker compose run --rm web python manage.py seed_demo
+          docker compose up -d web
+          curl --retry 10 --retry-connrefused --fail --silent --show-error http://127.0.0.1:8000/ -o "$RUNNER_TEMP/catalog.html"
+          grep -F 'Verde Kitchen' "$RUNNER_TEMP/catalog.html"
+          grep -F 'Roast Chicken Bowl' "$RUNNER_TEMP/catalog.html"
+      - name: Print Compose logs
+        if: failure()
+        run: docker compose logs
+      - name: Shut down test containers
+        if: always()
+        run: docker compose down --volumes

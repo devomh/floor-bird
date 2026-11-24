@@ -1,0 +1,9 @@
+**
+!pyproject.toml
+!uv.lock
+!manage.py
+!doordish/
+!doordish/**
+!catalog/
+!catalog/**
+**/__pycache__
