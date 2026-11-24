@@ -1,0 +1,47 @@
+{% extends "orders/base.html" %}
+
+{% block title %}Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+<h1>Order #{{ order.id }}</h1>
+<p class="muted">{{ order.merchant.name }}</p>
+<p>Order status <strong>{{ order.get_state_display }}</strong></p>
+
+<section aria-labelledby="items-heading">
+    <h2 id="items-heading">Items</h2>
+    <ul class="list" role="list">
+        {% for item in items %}
+        <li class="row">
+            <span>{{ item.quantity }} × {{ item.product_name }}</span>
+            <span class="price">${{ item.unit_price|floatformat:"2u" }} each</span>
+        </li>
+        {% endfor %}
+    </ul>
+    <p class="row order-total">
+        <span>Total</span>
+        <span class="price">${{ order.total|floatformat:"2u" }}</span>
+    </p>
+    {% if order.is_payment_simulated %}
+    <p class="muted">Payment was simulated.</p>
+    {% endif %}
+</section>
+
+<section aria-labelledby="address-heading">
+    <h2 id="address-heading">Delivery address</h2>
+    <p>{{ order.delivery_address|linebreaksbr }}</p>
+</section>
+
+<section aria-labelledby="history-heading">
+    <h2 id="history-heading">Status history</h2>
+    <ol class="list" role="list">
+        {% for event in events %}
+        <li class="row history-row">
+            <span>{{ event.get_to_state_display }}</span>
+            <time class="muted" datetime="{{ event.created_at|date:'c' }}">
+                {{ event.created_at|date:"M j, Y, g:i A T" }}
+            </time>
+        </li>
+        {% endfor %}
+    </ol>
+</section>
+{% endblock %}

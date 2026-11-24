@@ -1,0 +1,42 @@
+{% extends "orders/base.html" %}
+
+{% block title %}Merchant orders{% endblock %}
+
+{% block content %}
+<h1>Merchant orders</h1>
+<p class="muted">{{ merchant.name }}</p>
+
+{% for message in messages %}
+    {% if message.level_tag == "error" %}
+    <p class="notice notice-error" role="alert">{{ message }}</p>
+    {% else %}
+    <p class="notice" role="status">{{ message }}</p>
+    {% endif %}
+{% endfor %}
+
+{% for order in orders %}
+<section aria-labelledby="order-{{ order.id }}">
+    <h2 id="order-{{ order.id }}">Order #{{ order.id }}</h2>
+    <p>Order status <strong>{{ order.get_state_display }}</strong></p>
+    <ul class="list" role="list">
+        {% for item in order.items.all %}
+        <li>{{ item.quantity }} × {{ item.product_name }}</li>
+        {% endfor %}
+    </ul>
+
+    {% if order.state == "placed" %}
+    <form method="post" action="{% url 'orders:merchant_accept' order_id=order.id %}">
+        {% csrf_token %}
+        <button type="submit">Accept order<span class="visually-hidden"> #{{ order.id }}</span></button>
+    </form>
+    {% elif order.state == "accepted" %}
+    <form method="post" action="{% url 'orders:merchant_ready' order_id=order.id %}">
+        {% csrf_token %}
+        <button type="submit">Mark ready<span class="visually-hidden"> for order #{{ order.id }}</span></button>
+    </form>
+    {% endif %}
+</section>
+{% empty %}
+<p>No orders yet.</p>
+{% endfor %}
+{% endblock %}

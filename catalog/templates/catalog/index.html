@@ -21,6 +21,14 @@
             line-height: 1.1;
             margin: 0 0 2rem;
         }
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        nav form { margin: 0; }
+        a { color: #245c43; }
         h2 { font-size: 1.25rem; }
         ul {
             margin: 0;
@@ -42,6 +50,19 @@
 </head>
 <body>
     <main>
+        <nav aria-label="Account">
+            {% if user.is_authenticated %}
+            {% if has_merchant_queue %}
+            <a href="{% url 'orders:merchant_queue' %}">Merchant orders</a>
+            {% endif %}
+            <form method="post" action="{% url 'accounts:logout' %}">
+                {% csrf_token %}
+                <button type="submit">Sign out</button>
+            </form>
+            {% else %}
+            <a href="{% url 'accounts:login' %}">Sign in</a>
+            {% endif %}
+        </nav>
         <h1>Catalog</h1>
         {% regroup products by merchant as merchants %}
         {% for merchant in merchants %}
@@ -55,6 +76,9 @@
                 </li>
                 {% endfor %}
             </ul>
+            {% if can_order %}
+            <p><a href="{% url 'orders:checkout' merchant_slug=merchant.grouper.slug %}">Order from {{ merchant.grouper.name }}</a></p>
+            {% endif %}
         </section>
         {% empty %}
         <p>No products are available right now.</p>

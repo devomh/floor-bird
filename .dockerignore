@@ -6,4 +6,8 @@
 !doordish/**
 !catalog/
 !catalog/**
+!accounts/
+!accounts/**
+!orders/
+!orders/**
 **/__pycache__

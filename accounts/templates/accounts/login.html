@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign in | Doordish</title>
+    <style>
+        body {
+            margin: 0;
+            background: #f8f9f5;
+            color: #19251e;
+            font: 1rem/1.5 system-ui, sans-serif;
+        }
+        main {
+            max-width: 25rem;
+            margin: 0 auto;
+            padding: clamp(2rem, 7vw, 4rem) 1.25rem;
+        }
+        a { color: #23553a; }
+        label { display: block; font-weight: 600; }
+        input:not([type="hidden"]) {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 0.625rem;
+            border: 1px solid #707b72;
+            border-radius: 0.25rem;
+            font: inherit;
+        }
+        button {
+            padding: 0.625rem 1rem;
+            border: 0;
+            border-radius: 0.25rem;
+            background: #23553a;
+            color: white;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .errorlist { color: #942e25; }
+    </style>
+</head>
+<body>
+    <main>
+        <a href="{% url 'catalog' %}">Catalog</a>
+        <h1>Sign in</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {% if next %}
+                <input type="hidden" name="next" value="{{ next }}">
+            {% endif %}
+            <button type="submit">Sign in</button>
+        </form>
+    </main>
+</body>
+</html>

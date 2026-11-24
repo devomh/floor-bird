@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %} | Doordish</title>
+    <style>
+        :root {
+            --background: #f8f9f5;
+            --text: #19251e;
+            --muted: #46584c;
+            --line: #d8ded7;
+            --accent: #24553d;
+            --error: #8a2f22;
+        }
+        body {
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+            font: 1rem/1.5 system-ui, sans-serif;
+        }
+        main {
+            max-width: 40rem;
+            margin: 0 auto;
+            padding: clamp(2rem, 7vw, 4rem) 1.25rem;
+        }
+        nav, .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem 1.25rem;
+        }
+        nav {
+            margin-bottom: 2rem;
+        }
+        h1 {
+            margin: 0 0 0.5rem;
+            font-size: clamp(1.875rem, 8vw, 2.5rem);
+            line-height: 1.1;
+        }
+        h2, legend {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        h2, legend, p {
+            margin: 0 0 0.75rem;
+        }
+        section, fieldset, .field {
+            margin: 1.75rem 0;
+        }
+        fieldset {
+            padding: 0;
+            border: 0;
+            min-width: 0;
+        }
+        legend {
+            padding: 0;
+        }
+        a {
+            color: var(--accent);
+        }
+        button, input, textarea {
+            font: inherit;
+        }
+        button {
+            padding: 0.55rem 0.85rem;
+            border: 1px solid var(--accent);
+            border-radius: 0.35rem;
+            background: var(--accent);
+            color: white;
+            cursor: pointer;
+        }
+        .text-button {
+            padding-right: 0;
+            border: 0;
+            background: transparent;
+            color: var(--accent);
+            text-decoration: underline;
+        }
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+        input[type="number"], textarea {
+            box-sizing: border-box;
+            padding: 0.4rem 0.6rem;
+            border: 1px solid #69776d;
+            border-radius: 0.3rem;
+            background: #fff;
+            color: var(--text);
+        }
+        input[type="number"] {
+            width: 5.5rem;
+        }
+        textarea {
+            display: block;
+            width: 100%;
+            resize: vertical;
+        }
+        .list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .list > li {
+            border-top: 1px solid var(--line);
+            padding: 0.875rem 0;
+        }
+        .muted {
+            color: var(--muted);
+        }
+        .price {
+            flex-shrink: 0;
+            font-variant-numeric: tabular-nums;
+        }
+        .errorlist {
+            margin: 0.35rem 0;
+            padding-left: 1.15rem;
+            color: var(--error);
+        }
+        .order-total {
+            padding-top: 0.875rem;
+            border-top: 1px solid var(--line);
+            font-weight: 700;
+        }
+        .notice {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border: 1px solid var(--line);
+            border-radius: 0.3rem;
+        }
+        .notice-error {
+            color: var(--error);
+        }
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip-path: inset(50%);
+            white-space: nowrap;
+        }
+        @media (max-width: 26rem) {
+            .history-row {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <nav aria-label="Doordish">
+            <a href="{% url 'catalog' %}">Catalog</a>
+            {% if user.is_authenticated %}
+            <form method="post" action="{% url 'accounts:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="text-button">Sign out</button>
+            </form>
+            {% endif %}
+        </nav>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

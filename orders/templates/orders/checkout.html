@@ -1,0 +1,51 @@
+{% extends "orders/base.html" %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<h1>Checkout</h1>
+<p class="muted">{{ merchant.name }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.submission_key }}
+    {% if form.submission_key.errors %}
+        {{ form.submission_key.errors }}
+        <p><a href="{{ request.path }}">Start a new checkout</a></p>
+    {% endif %}
+    {{ form.non_field_errors }}
+
+    <fieldset>
+        <legend>Products</legend>
+        <ul class="list" role="list">
+            {% for product, field in quantity_fields %}
+            <li>
+                <div class="row">
+                    <div>
+                        <strong>{{ product.name }}</strong><br>
+                        <span class="price muted">${{ product.unit_price|floatformat:"2u" }}</span>
+                    </div>
+                    <div>
+                        <label for="{{ field.id_for_label }}">
+                            Quantity<span class="visually-hidden"> for {{ product.name }}</span>
+                        </label>
+                        {{ field }}
+                    </div>
+                </div>
+                {{ field.errors }}
+            </li>
+            {% empty %}
+            <li>No products are available right now.</li>
+            {% endfor %}
+        </ul>
+    </fieldset>
+
+    <div class="field">
+        {{ form.delivery_address.label_tag }}
+        {{ form.delivery_address }}
+        {{ form.delivery_address.errors }}
+    </div>
+    <p class="muted">Use a sample delivery address. Payment is simulated.</p>
+    <button type="submit">Place order</button>
+</form>
+{% endblock %}

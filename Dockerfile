@@ -13,5 +13,7 @@ RUN uv sync --locked --no-dev
 COPY manage.py ./
 COPY doordish ./doordish
 COPY catalog ./catalog
+COPY accounts ./accounts
+COPY orders ./orders
 
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000", "--noreload"]
